@@ -1,0 +1,25 @@
+{
+  "name": "@kadence/helpers",
+  "version": "1.0.0",
+  "description": "Helpers",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@kadence/icons": "file:../icons"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stellarwp/kadence-helpers.git"
+  },
+  "keywords": [
+    "helper"
+  ],
+  "author": "kadencewp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stellarwp/kadence-helpers/issues"
+  },
+  "homepage": "https://github.com/stellarwp/kadence-helpers#readme"
+}
