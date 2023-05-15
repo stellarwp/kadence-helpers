@@ -23,4 +23,4 @@ export { SPACING_SIZES_MAP, FONT_SIZES_MAP, GAP_SIZES_MAP, isRTL } from './const
 export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './spacing-utilities';
 export { getFontSizeOptionOutput  } from './font-size-utilities';
 export { getGapSizeOptionOutput } from './gap-size-utilities';
-export { default as getACFRepeatorsForSource } from './get-acf-repeaters-for-source';
+export { getACFRepeatorsForSource, clearACFRepeatorsForSource } from './repeater-utilities';

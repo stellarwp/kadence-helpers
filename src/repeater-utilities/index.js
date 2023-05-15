@@ -12,14 +12,9 @@ const {
  * @param {*} source The post id (or option) source
  * @returns {array} All repeater fields associated with the source
  */
-export default function getACFRepeatorsForSource( source, onFinish, clearCache ) {
-
+export function getACFRepeatorsForSource( source, onFinish ) {
     if ( 'function' == typeof(onFinish) ) {
         const repeatersKey = 'kadenceRepeaters-' + source;
-
-        if ( clearCache ) {
-            localStorage.removeItem( repeatersKey );
-        }
         
         const localRepeatersForSource = JSON.parse( localStorage.getItem( repeatersKey ) );
 
@@ -50,4 +45,10 @@ export default function getACFRepeatorsForSource( source, onFinish, clearCache )
             return null
         }
     }
+}
+
+export function clearACFRepeatorsForSource( source ) {
+    const repeatersKey = 'kadenceRepeaters-' + source;
+
+    localStorage.removeItem( repeatersKey );
 }
