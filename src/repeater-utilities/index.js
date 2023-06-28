@@ -96,7 +96,6 @@ export function clearRepeatersForSource( source ) {
 }
 
 export function clearRepeaterData( source, field ) {
-    console.log('clearing', source, field)
     const repeaterDataKey = 'kadenceRepeaterData-' + source + '-' + field;
 
     localStorage.removeItem( repeaterDataKey );
@@ -104,7 +103,6 @@ export function clearRepeaterData( source, field ) {
 
 export function getRepeaterOptionFromRepeaters( repeaters, repeaterSlug ) {
     var repeaterOption = {};
-    console.log('getRepeaterOptionFromRepeaters', repeaters, repeaterSlug)
     if ( repeaters && repeaterSlug ) {
         repeaters.forEach(repeaterGroup => {
             if ( repeaterGroup['options'] ) {
