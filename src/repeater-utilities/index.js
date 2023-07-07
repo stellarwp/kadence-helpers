@@ -87,9 +87,9 @@ export function getRepeaterData( source, field, onFinish ) {
             } )
             .catch( ( e ) => {
                 // Nothing needed here.
+                onFinish( null );
+                return null
             } );
-            onFinish( null );
-            return null
         }
     }
 }
