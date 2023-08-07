@@ -1,3 +1,5 @@
+import { SafeParseJSON } from "..";
+
 const { repeatersEndpoint, repeaterDataEndpoint, dynamicFieldsEndpoint } = window.kadenceDynamicParams;
 const { apiFetch } = wp;
 const { addQueryArgs } = wp.url;
@@ -122,45 +124,19 @@ export function getRepeaterOptionFromRepeaters( repeaters, repeaterSlug ) {
     return repeaterOption;
 }
 
-
-/**
- * Try Parsing
- */
-function TryParseJSON( jsonString, forceJson = true ) {
-	try {
-		var o = JSON.parse( jsonString );
-
-		// Handle non-exception-throwing cases:
-		// Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
-		// but... JSON.parse(null) returns null, and typeof null === "object", 
-		// so we must check for that, too. Thankfully, null is falsey, so this suffices:
-		if (o && typeof o === "object") {
-			return o;
-		}
-	}
-	catch (e) { }
-	if ( jsonString && typeof jsonString === "object" ) {
-		return jsonString;
-	}
-	if ( forceJson ) {
-		return {};
-	}
-	return false;
-}
-
 function getQuery( blockAttributes, contextPost = null, repeaterRow = '', dynamicSource = '' ) {
 	const { source, field, custom, para, before, after, fallback, type, relate, relcustom, showAll, useRepeaterContext } = blockAttributes;
 	let theSource = source ? source : contextPost;
 	// This can be removed once fully updated to use kadenceblockspro/data store.
 	if ( wp.data.select( 'core/editor' ) && ! theSource ) {
 		if ( kbpData.isKadenceE && kadenceElementParams.previewPostID ) {
-			const postId = TryParseJSON( kadenceElementParams.previewPostID );
+			const postId = SafeParseJSON( kadenceElementParams.previewPostID );
 			theSource = postId && postId.id ? postId.id : '';
 		} else {
 			theSource = wp.data.select( 'core/editor' ).getCurrentPostId();
 		}
 	}
-	dynamicSource = dynamicSource ? dynamicSource : theSource;
+	dynamicSource = parseDynamicSource( dynamicSource, theSource );
 
 	return {
 		source: useRepeaterContext ? dynamicSource : theSource,
@@ -178,3 +154,41 @@ function getQuery( blockAttributes, contextPost = null, repeaterRow = '', dynami
 		repeaterRow: repeaterRow,
 	};
 }
+
+/**
+ * Parse a usable source (post id) value from something more raw from a repeater
+ */
+export function parseRepeaterSource( source ) {
+    var theSource = source;
+    if( kbpData.isKadenceE && kadenceElementParams.previewPostID ) {
+        const postId = SafeParseJSON( kadenceElementParams.previewPostID );
+        theSource = postId && postId.id ? postId.id : '';
+    } else {
+        if ( source && 'string' == typeof( source ) && source.includes( '|' )) {
+            const sourceSplit = source.split( '|' );
+            theSource = 'undefined' != typeof( sourceSplit[0] ) ? sourceSplit?.[0] : '';
+
+            theSource = 'current' == theSource ? '' : theSource;
+        }
+    }
+    return theSource;
+};
+
+/**
+ * Psee if a dynamic source needs a context sensitive post prepended on account of being the "current" post
+ */
+export function parseDynamicSource( dynamicSource, theSource ) {
+    var repeaterSource = '';
+    if ( dynamicSource && 'string' == typeof( dynamicSource ) && dynamicSource.includes( '|' )) {
+        const sourceSplit = dynamicSource.split( '|' );
+        if ( sourceSplit){
+            repeaterSource = sourceSplit?.[0];
+        }
+
+        if ( ! repeaterSource ) {
+            return theSource + dynamicSource;
+        }
+    }
+
+    return dynamicSource ? dynamicSource : theSource;
+};

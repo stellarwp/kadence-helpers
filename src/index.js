@@ -10,7 +10,6 @@ export { default as DeprecatedKadenceColorOutput } from './deprecated-kadence-co
 export { default as fetchJson } from './fetch-json';
 export { default as capitalizeFirstLetter } from './capital-first';
 export { default as SafeParseJSON } from './parse-json';
-export { default as parseRepeaterSource } from './parse-repeater-source';
 export { default as getUnitIcon } from './get-unit-icon';
 export { default as typographyStyle } from './typography-style';
 export { default as linkedOrIndividual } from './is-linked-or-individual';
@@ -24,7 +23,7 @@ export { SPACING_SIZES_MAP, FONT_SIZES_MAP, GAP_SIZES_MAP, isRTL } from './const
 export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './spacing-utilities';
 export { getFontSizeOptionOutput  } from './font-size-utilities';
 export { getGapSizeOptionOutput } from './gap-size-utilities';
-export { getRepeatersForSource, getRepeaterData, clearRepeatersForSource, clearRepeaterData, getRepeaterOptionFromRepeaters } from './repeater-utilities';
+export { getRepeatersForSource, getRepeaterData, clearRepeatersForSource, clearRepeaterData, getRepeaterOptionFromRepeaters, parseRepeaterSource, parseDynamicSource } from './repeater-utilities';
 
 export { default as getPostOrWidgetId } from './get-post-or-widget-id';
 export { default as getPostOrFseId } from './get-post-or-fse-id';
