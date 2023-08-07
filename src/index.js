@@ -10,6 +10,7 @@ export { default as DeprecatedKadenceColorOutput } from './deprecated-kadence-co
 export { default as fetchJson } from './fetch-json';
 export { default as capitalizeFirstLetter } from './capital-first';
 export { default as SafeParseJSON } from './parse-json';
+export { default as parseRepeaterSource } from './parse-repeater-source';
 export { default as getUnitIcon } from './get-unit-icon';
 export { default as typographyStyle } from './typography-style';
 export { default as linkedOrIndividual } from './is-linked-or-individual';
