@@ -15,6 +15,7 @@ export { default as typographyStyle } from './typography-style';
 export { default as linkedOrIndividual } from './is-linked-or-individual';
 export { default as setBlockDefaults } from './set-block-defaults';
 export { default as getUniqueId } from './get-unique-id';
+export { default as getBlockByUniqueID } from './get-block-by-unique-id';
 export { default as getTransferableAttributes } from './get-transferable-attributes';
 export { default as getInQueryBlock } from './get-in-query-block';
 export { default as mouseOverVisualizer } from './mouse-over-visualizer';
