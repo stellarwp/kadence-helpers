@@ -16,7 +16,7 @@ const {
  */
 export function getRepeatersForSource( source, contextPost, onFinish ) {
     if ( 'function' == typeof(onFinish) ) {
-        const repeatersKey = 'kadenceRepeaters-' + source;
+        const repeatersKey = 'kadenceRepeaters-' + source + contextPost;
         
         const localRepeatersForSource = JSON.parse( localStorage.getItem( repeatersKey ) );
 
