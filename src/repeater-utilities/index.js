@@ -85,6 +85,9 @@ export function getRepeaterData( source, field, onFinish ) {
 
                     onFinish( response );
                     return response
+                } else {
+                    onFinish( null );
+                    return null
                 }
             } )
             .catch( ( e ) => {
