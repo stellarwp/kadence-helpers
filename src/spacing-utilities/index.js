@@ -20,6 +20,15 @@ export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_
 	if ( undefined === value ) {
 		return '';
 	}
+	if ( value === '' ) {
+		return '';
+	}
+	if ( value === null ) {
+		return '';
+	}
+	if ( value === '') {
+		return '0' + unit;
+	}
 	if ( ! spacingMap ) {
 		return value;
 	}
@@ -82,4 +91,65 @@ export function getSpacingValueFromSize( value, spacingMap = SPACING_SIZES_MAP )
 		return value;
 	}
 	return found.value;
+}
+
+/**
+ * Checks if two arrays have values that exist at the same indices and are of the same length
+ * @param {*} array1 
+ * @param {*} array2 
+ * @returns boolean
+ */
+export function objectSameFill( array1, array2 ) {
+	if ( typeof( array1 ) != 'object' || typeof( array2 ) != 'object' ) {
+		return false;
+	}
+
+	if ( array1.length != array2.length ) {
+		return false;
+	}
+
+	for ( let i = 0; i < array1.length; i++ ) {
+		const ele1 = array1[i];
+		const ele2 = array2[i];
+		
+		if ( ( ele1 && ! ele2 ) || ( ! ele1 && ele2 ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Return incomingValue with any non matching (by data type) indices reset to ''
+ * Matching data type is determined by the last changed index from the reference
+ * @param {*} reference 
+ * @param {*} incomingValue 
+ * @returns {*}
+ */
+export function clearNonMatchingValues( reference, incomingValue ) {
+	if ( typeof( reference ) != 'object' || typeof( incomingValue ) != 'object' ) {
+		return incomingValue;
+	}
+
+	if ( reference.length != incomingValue.length ) {
+		return incomingValue;
+	}
+
+	let changedVal = null;
+
+	for ( let i = 0; i < reference.length; i++ ) {
+		const valPart = reference[i];
+		const incValPart = incomingValue[i];
+		
+		if ( valPart !== incValPart ) {
+			changedVal = incValPart;
+		}
+	}
+
+	if ( changedVal ) {
+		return incomingValue.map( val => typeof( val ) == typeof( changedVal ) ? val : '' );
+	}
+
+	return incomingValue;
 }
