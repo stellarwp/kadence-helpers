@@ -1,4 +1,5 @@
 import { SafeParseJSON } from '..';
+import { resolveSelect } from '@wordpress/data';
 
 const { repeatersEndpoint, repeaterDataEndpoint, dynamicFieldsEndpoint } = window.kadenceDynamicParams;
 const { apiFetch } = wp;
@@ -29,9 +30,8 @@ export function getRepeatersForSource( source, contextPost, onFinish ) {
 				useRepeaterContext: true,
 			};
 
-			apiFetch( {
-				path: addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ),
-			} )
+			resolveSelect( 'kadenceblockspro/data' )
+				.getDynamicDataResponse( addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ) )
 				.then( ( response ) => {
 					//this.setState( { fields, loaded: true } );
 					if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
@@ -65,12 +65,13 @@ export function getRepeaterData( source, field, onFinish ) {
 			onFinish( localRepeaterDataForSourceAndKey );
 			return localRepeaterDataForSourceAndKey;
 		} else {
-			apiFetch( {
-				path: addQueryArgs( repeaterDataEndpoint, {
-					source: source,
-					field: field,
-				} ),
-			} )
+			resolveSelect( 'kadenceblockspro/data' )
+				.getDynamicDataResponse(
+					addQueryArgs( repeaterDataEndpoint, {
+						source: source,
+						field: field,
+					} )
+				)
 				.then( ( response ) => {
 					if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
 						localStorage.setItem( repeaterDataKey, JSON.stringify( response ) );
