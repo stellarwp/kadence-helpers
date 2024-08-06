@@ -31,7 +31,7 @@ export function getRepeatersForSource( source, contextPost, onFinish ) {
 			};
 
 			resolveSelect( 'kadenceblockspro/data' )
-				.getDynamicDataResponse( addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ) )
+				.storeFetch( addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ) )
 				.then( ( response ) => {
 					//this.setState( { fields, loaded: true } );
 					if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
@@ -66,7 +66,7 @@ export function getRepeaterData( source, field, onFinish ) {
 			return localRepeaterDataForSourceAndKey;
 		} else {
 			resolveSelect( 'kadenceblockspro/data' )
-				.getDynamicDataResponse(
+				.storeFetch(
 					addQueryArgs( repeaterDataEndpoint, {
 						source: source,
 						field: field,
