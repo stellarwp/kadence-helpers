@@ -23,10 +23,24 @@ export { default as getInQueryBlock } from './get-in-query-block';
 export { default as setDynamicState } from './set-dynamic-state';
 export { default as mouseOverVisualizer } from './mouse-over-visualizer';
 export { SPACING_SIZES_MAP, FONT_SIZES_MAP, GAP_SIZES_MAP, isRTL } from './constants';
-export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize, objectSameFill, clearNonMatchingValues } from './spacing-utilities';
+export {
+	getSpacingOptionName,
+	getSpacingOptionOutput,
+	getSpacingOptionSize,
+	getSpacingNameFromSize,
+	getSpacingValueFromSize,
+	objectSameFill,
+	clearNonMatchingValues,
+} from './spacing-utilities';
 export { getFontSizeOptionOutput } from './font-size-utilities';
 export { getGapSizeOptionOutput } from './gap-size-utilities';
-export { getRepeatersForSource, getRepeaterData, clearRepeatersForSource, clearRepeaterData, getRepeaterOptionFromRepeaters, parseRepeaterSource, parseDynamicSource } from './repeater-utilities';
+export {
+	getRepeatersForSource,
+	getRepeaterData,
+	getRepeaterOptionFromRepeaters,
+	parseRepeaterSource,
+	parseDynamicSource,
+} from './repeater-utilities';
 export { default as getPostOrWidgetId } from './get-post-or-widget-id';
 export { default as getPostOrFseId } from './get-post-or-fse-id';
 export { default as hashString } from './hash-string';
