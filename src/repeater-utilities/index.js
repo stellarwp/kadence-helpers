@@ -5,7 +5,6 @@ const { repeatersEndpoint, repeaterDataEndpoint, dynamicFieldsEndpoint } = windo
 const { apiFetch } = wp;
 const { addQueryArgs } = wp.url;
 const { addFilter } = wp.hooks;
-const { localStorage } = window;
 
 /**
  * Returns an array of repeater fields for a source
@@ -15,37 +14,26 @@ const { localStorage } = window;
  */
 export function getRepeatersForSource( source, contextPost, onFinish ) {
 	if ( 'function' == typeof onFinish ) {
-		const repeatersKey = 'kadenceRepeaters-' + source + contextPost;
+		const props = {
+			source: source,
+			type: 'repeaters',
+			contextPost: contextPost,
+			useRepeaterContext: true,
+		};
 
-		const localRepeatersForSource = JSON.parse( localStorage.getItem( repeatersKey ) );
-
-		if ( localRepeatersForSource ) {
-			onFinish( localRepeatersForSource );
-			return localRepeatersForSource;
-		} else {
-			const props = {
-				source: source,
-				type: 'repeaters',
-				contextPost: contextPost,
-				useRepeaterContext: true,
-			};
-
-			resolveSelect( 'kadenceblockspro/data' )
-				.storeFetch( addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ) )
-				.then( ( response ) => {
-					//this.setState( { fields, loaded: true } );
-					if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
-						localStorage.setItem( repeatersKey, JSON.stringify( response ) );
-
-						onFinish( response );
-						return response;
-					}
-				} )
-				.catch( ( e ) => {
-					onFinish( null );
-					return null;
-				} );
-		}
+		resolveSelect( 'kadenceblockspro/data' )
+			.storeFetch( addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ) )
+			.then( ( response ) => {
+				//this.setState( { fields, loaded: true } );
+				if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
+					onFinish( response );
+					return response;
+				}
+			} )
+			.catch( ( e ) => {
+				onFinish( null );
+				return null;
+			} );
 	}
 }
 
@@ -57,55 +45,32 @@ export function getRepeatersForSource( source, contextPost, onFinish ) {
  */
 export function getRepeaterData( source, field, onFinish ) {
 	if ( 'function' == typeof onFinish ) {
-		const repeaterDataKey = 'kadenceRepeaterData-' + source + '-' + field;
-
-		const localRepeaterDataForSourceAndKey = JSON.parse( localStorage.getItem( repeaterDataKey ) );
-
-		if ( localRepeaterDataForSourceAndKey ) {
-			onFinish( localRepeaterDataForSourceAndKey );
-			return localRepeaterDataForSourceAndKey;
-		} else {
-			resolveSelect( 'kadenceblockspro/data' )
-				.storeFetch(
-					addQueryArgs( repeaterDataEndpoint, {
-						source: source,
-						field: field,
-					} )
-				)
-				.then( ( response ) => {
-					if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
-						localStorage.setItem( repeaterDataKey, JSON.stringify( response ) );
-
-						onFinish( response );
-						return response;
-					} else if ( 'object' === typeof response && 0 == Object.keys( response ).length ) {
-						//not doing anything different with a valid, but empty response yet.
-						onFinish( response );
-						return response;
-					} else {
-						onFinish( null );
-						return null;
-					}
+		resolveSelect( 'kadenceblockspro/data' )
+			.storeFetch(
+				addQueryArgs( repeaterDataEndpoint, {
+					source: source,
+					field: field,
 				} )
-				.catch( ( e ) => {
-					// Nothing needed here.
+			)
+			.then( ( response ) => {
+				if ( 'object' === typeof response && 1 <= Object.keys( response ).length ) {
+					onFinish( response );
+					return response;
+				} else if ( 'object' === typeof response && 0 == Object.keys( response ).length ) {
+					//not doing anything different with a valid, but empty response yet.
+					onFinish( response );
+					return response;
+				} else {
 					onFinish( null );
 					return null;
-				} );
-		}
+				}
+			} )
+			.catch( ( e ) => {
+				// Nothing needed here.
+				onFinish( null );
+				return null;
+			} );
 	}
-}
-
-export function clearRepeatersForSource( source ) {
-	const repeatersKey = 'kadenceRepeaters-' + source;
-
-	localStorage.removeItem( repeatersKey );
-}
-
-export function clearRepeaterData( source, field ) {
-	const repeaterDataKey = 'kadenceRepeaterData-' + source + '-' + field;
-
-	localStorage.removeItem( repeaterDataKey );
 }
 
 export function getRepeaterOptionFromRepeaters( repeaters, repeaterSlug ) {
