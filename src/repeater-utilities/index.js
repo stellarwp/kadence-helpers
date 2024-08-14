@@ -1,10 +1,7 @@
 import { SafeParseJSON } from '..';
 import { resolveSelect } from '@wordpress/data';
-
-const { repeatersEndpoint, repeaterDataEndpoint, dynamicFieldsEndpoint } = window.kadenceDynamicParams;
-const { apiFetch } = wp;
-const { addQueryArgs } = wp.url;
-const { addFilter } = wp.hooks;
+import { addQueryArgs } from '@wordpress/url';
+import { get } from 'lodash';
 
 /**
  * Returns an array of repeater fields for a source
@@ -20,6 +17,8 @@ export function getRepeatersForSource( source, contextPost, onFinish ) {
 			contextPost: contextPost,
 			useRepeaterContext: true,
 		};
+
+		const dynamicFieldsEndpoint = get( window, [ 'kadenceDynamicParams', 'dynamicFieldsEndpoint' ], '' );
 
 		resolveSelect( 'kadenceblockspro/data' )
 			.storeFetch( addQueryArgs( dynamicFieldsEndpoint, getQuery( props, contextPost ) ) )
@@ -45,6 +44,7 @@ export function getRepeatersForSource( source, contextPost, onFinish ) {
  */
 export function getRepeaterData( source, field, onFinish ) {
 	if ( 'function' == typeof onFinish ) {
+		const repeaterDataEndpoint = get( window, [ 'kadenceDynamicParams', 'repeaterDataEndpoint' ], '' );
 		resolveSelect( 'kadenceblockspro/data' )
 			.storeFetch(
 				addQueryArgs( repeaterDataEndpoint, {
