@@ -55,3 +55,5 @@ export { blockExists } from './block-exists';
 export { allowOneBlockOfType } from './allow-one-block-of-type';
 
 export { default as hasKadenceCustomCss } from './has-kadence-custom-css';
+
+export { getBlocksParams, getBlocksParam } from './get-params';
