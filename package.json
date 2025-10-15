@@ -28,7 +28,7 @@
 		"prepare": "npm run build"
 	},
 	"dependencies": {
-		"@kadence/icons": "^1.1.0"
+		"@kadence/icons": "git+https://github.com/stellarwp/kadence-icons.git#package"
 	},
 	"repository": {
 		"type": "git",
