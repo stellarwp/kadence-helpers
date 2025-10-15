@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { SPACING_SIZES_MAP } from '../constants';
 export function getSpacingOptionName( value, unit, spacingMap = SPACING_SIZES_MAP ) {
 	if ( ! value ) {
-		return __( 'None', 'kadence-blocks' );
+		return __( 'None', '__KADENCE__TEXT__DOMAIN__' );
 	}
 	if ( ! spacingMap ) {
-		return __( 'Unset', 'kadence-blocks' );
+		return __( 'Unset', '__KADENCE__TEXT__DOMAIN__' );
 	}
 	if ( value === '0') {
-		return __( 'None', 'kadence-blocks' );
+		return __( 'None', '__KADENCE__TEXT__DOMAIN__' );
 	}
 	const found = spacingMap.find( ( option ) => option.value === value );
 	if ( ! found ) {
@@ -62,13 +62,13 @@ export function getSpacingOptionSize( value, spacingMap = SPACING_SIZES_MAP ) {
 }
 export function getSpacingNameFromSize( value, spacingMap = SPACING_SIZES_MAP ) {
 	if ( ! value ) {
-		return __( 'Unset', 'kadence-blocks' );
+		return __( 'Unset', '__KADENCE__TEXT__DOMAIN__' );
 	}
 	if ( ! spacingMap ) {
-		return __( 'Unset', 'kadence-blocks' );
+		return __( 'Unset', '__KADENCE__TEXT__DOMAIN__' );
 	}
 	if ( value === '0') {
-		return __( 'None', 'kadence-blocks' );
+		return __( 'None', '__KADENCE__TEXT__DOMAIN__' );
 	}
 	const found = spacingMap.find( ( option ) => option.size === value );
 	if ( ! found ) {

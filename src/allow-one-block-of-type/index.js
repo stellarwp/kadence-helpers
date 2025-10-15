@@ -19,7 +19,7 @@ export const allowOneBlockOfType = () => {
                         dispatch('core/notices').createNotice(
                             'warning',
                             sprintf(
-                                __('Only one %s block is allowed.', 'kadence-blocks'),
+                                __('Only one %s block is allowed.', '__KADENCE__TEXT__DOMAIN__'),
                                 blockTitle
                             ),
                             {
