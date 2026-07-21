@@ -1,6 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { GAP_SIZES_MAP } from '../constants';
+import isTokenAlias from '../is-token-alias';
+import resolveTokenAlias from '../resolve-token-alias';
 export function getGapSizeOptionOutput( value, unit, sizesMap = GAP_SIZES_MAP ) {
+	if ( isTokenAlias( value ) ) {
+		return resolveTokenAlias( value );
+	}
 	if ( ! value ) {
 		return '';
 	}

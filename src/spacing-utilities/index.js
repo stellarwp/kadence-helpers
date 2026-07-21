@@ -1,5 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { SPACING_SIZES_MAP } from '../constants';
+import isTokenAlias from '../is-token-alias';
+import resolveTokenAlias from '../resolve-token-alias';
 export function getSpacingOptionName( value, unit, spacingMap = SPACING_SIZES_MAP ) {
 	if ( ! value ) {
 		return __( 'None', '__KADENCE__TEXT__DOMAIN__' );
@@ -17,6 +19,9 @@ export function getSpacingOptionName( value, unit, spacingMap = SPACING_SIZES_MA
 	return found.name;
 }
 export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_MAP ) {
+	if ( isTokenAlias( value ) ) {
+		return resolveTokenAlias( value );
+	}
 	if ( undefined === value ) {
 		return '';
 	}

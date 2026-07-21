@@ -1,6 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { FONT_SIZES_MAP } from '../constants';
+import isTokenAlias from '../is-token-alias';
+import resolveTokenAlias from '../resolve-token-alias';
 export function getFontSizeOptionOutput( value, unit, sizesMap = FONT_SIZES_MAP ) {
+	if ( isTokenAlias( value ) ) {
+		return resolveTokenAlias( value );
+	}
 	if ( ! value ) {
 		return '';
 	}

@@ -2,6 +2,8 @@ import KadenceColorOutput from '../kadence-color-output';
 import typographyStyle from '../typography-style';
 import getBorderStyle from '../get-border-style';
 import getPreviewSize from '../get-preview-size';
+import isTokenAlias from '../is-token-alias';
+import resolveTokenAlias from '../resolve-token-alias';
 
 /**
  * A Class that can generate css output for a <style> tag.
@@ -359,6 +361,11 @@ export default class KadenceBlocksCSS {
             return false;
         }
 
+        // A token alias carries its own value/unit, so resolve to a bare var() and skip the calc().
+        if (isTokenAlias(value)) {
+            return resolveTokenAlias(value);
+        }
+
         var size_number = value ? value : '0';
         var size_unit = unit ? unit : 'em';
 
@@ -376,6 +383,11 @@ export default class KadenceBlocksCSS {
     render_size(value, unit = null) {
         if (this.empty(value)) {
             return false;
+        }
+
+        // A token alias carries its own value/unit, so resolve to a bare var() and skip the unit.
+        if (isTokenAlias(value)) {
+            return resolveTokenAlias(value);
         }
 
         var size_number = !this.empty(value) ? value : '0';
@@ -482,28 +494,38 @@ export default class KadenceBlocksCSS {
 
         if (previewValue && Array.isArray(previewValue)) {
             const zeroCheck = !checkZero || previewValue[0] != '0' || previewValue[0] != 0;
-            if (this.isNumeric(previewValue[0]) && zeroCheck) {
+            // A token alias is not numeric, so it must be caught before the isNumeric gate and emitted
+            // as a bare var() (the token carries its own unit).
+            if (isTokenAlias(previewValue[0])) {
+                this.add_property(args['first_prop'], resolveTokenAlias(previewValue[0]));
+            } else if (this.isNumeric(previewValue[0]) && zeroCheck) {
                 this.add_property(args['first_prop'], previewValue[0] + unit);
             } else if ('position' === property && !this.empty(previewValue[0])) {
                 this.add_property(args['first_prop'], previewValue[0]);
             } else if (!this.empty(previewValue[0]) && this.is_variable_value(previewValue[0])) {
                 this.add_property(args['first_prop'], this.get_variable_value(previewValue[0]));
             }
-            if (this.isNumeric(previewValue[1]) && zeroCheck) {
+            if (isTokenAlias(previewValue[1])) {
+                this.add_property(args['second_prop'], resolveTokenAlias(previewValue[1]));
+            } else if (this.isNumeric(previewValue[1]) && zeroCheck) {
                 this.add_property(args['second_prop'], previewValue[1] + unit);
             } else if ('position' === property && !this.empty(previewValue[1])) {
                 this.add_property(args['second_prop'], previewValue[1]);
             } else if (!this.empty(previewValue[1]) && this.is_variable_value(previewValue[1])) {
                 this.add_property(args['second_prop'], this.get_variable_value(previewValue[1]));
             }
-            if (this.isNumeric(previewValue[2]) && zeroCheck) {
+            if (isTokenAlias(previewValue[2])) {
+                this.add_property(args['third_prop'], resolveTokenAlias(previewValue[2]));
+            } else if (this.isNumeric(previewValue[2]) && zeroCheck) {
                 this.add_property(args['third_prop'], previewValue[2] + unit);
             } else if ('position' === property && !this.empty(previewValue[2])) {
                 this.add_property(args['third_prop'], previewValue[2]);
             } else if (!this.empty(previewValue[2]) && this.is_variable_value(previewValue[2])) {
                 this.add_property(args['third_prop'], this.get_variable_value(previewValue[2]));
             }
-            if (this.isNumeric(previewValue[3]) && zeroCheck) {
+            if (isTokenAlias(previewValue[3])) {
+                this.add_property(args['fourth_prop'], resolveTokenAlias(previewValue[3]));
+            } else if (this.isNumeric(previewValue[3]) && zeroCheck) {
                 this.add_property(args['fourth_prop'], previewValue[3] + unit);
             } else if ('position' === property && !this.empty(previewValue[3])) {
                 this.add_property(args['fourth_prop'], previewValue[3]);
@@ -777,6 +799,9 @@ export default class KadenceBlocksCSS {
         if ('opacity' in value) {
             opacity = 'opacity' in value && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0;
         }
+        // The shadow color flows through render_color -> KadenceColorOutput, so an aliased color is
+        // resolved there. The numeric offset/blur/spread fields are not a design-token alias target
+        // (a whole-shadow token is not a supported shape), so they stay literal here.
         var shadowString = '';
         if (value['inset']) {
             shadowString =
