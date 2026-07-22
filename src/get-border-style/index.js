@@ -2,23 +2,22 @@ import {
 	useMemo,
  } from '@wordpress/element';
  import KadenceColorOutput from '../kadence-color-output';
- import isTokenAlias from '../is-token-alias';
- import resolveTokenAlias from '../resolve-token-alias';
+ import { filterDimensionValue } from '../apply-output-filters';
  /**
-  * Format a resolved border-width value, honoring a design-token alias.
+  * Format a resolved border-width value through the dimension filter seam.
   *
-  * A `{dot.alias}` width carries its own unit through the token, so it resolves to a bare
-  * `var(--kb-token--<id>)` with no unit appended; a literal keeps the existing `value + unit` shape.
+  * The default output is the existing `value + unit`; a listener on `kadence.helpers.dimensionValue`
+  * (e.g. a design-token resolver) can override it before the unit is appended.
   *
   * @since TBD
   *
-  * @param {*}      width The resolved side width value (a number/string literal or an alias string).
-  * @param {string} unit  The border unit to append to a literal width.
+  * @param {*}      width The resolved side width value.
+  * @param {string} unit  The border unit appended to a literal width.
   *
   * @return {string} The CSS width string.
   */
  function formatBorderWidth( width, unit ) {
-	return isTokenAlias( width ) ? resolveTokenAlias( width ) : width + unit;
+	return filterDimensionValue( width, unit, () => width + unit );
  }
  function getInheritBorderColor( device, side, inheritBorder ) {
 	const desktopStyle = ( undefined !== inheritBorder?.[0] ? inheritBorder?.[0] : [] );

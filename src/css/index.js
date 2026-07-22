@@ -2,8 +2,7 @@ import KadenceColorOutput from '../kadence-color-output';
 import typographyStyle from '../typography-style';
 import getBorderStyle from '../get-border-style';
 import getPreviewSize from '../get-preview-size';
-import isTokenAlias from '../is-token-alias';
-import resolveTokenAlias from '../resolve-token-alias';
+import { filterDimensionValue } from '../apply-output-filters';
 
 /**
  * A Class that can generate css output for a <style> tag.
@@ -361,17 +360,12 @@ export default class KadenceBlocksCSS {
             return false;
         }
 
-        // A token alias carries its own value/unit, so resolve to a bare var() and skip the calc().
-        if (isTokenAlias(value)) {
-            return resolveTokenAlias(value);
-        }
+        return filterDimensionValue(value, unit, () => {
+            var size_number = value ? value : '0';
+            var size_unit = unit ? unit : 'em';
 
-        var size_number = value ? value : '0';
-        var size_unit = unit ? unit : 'em';
-
-        var size_string = 'calc(' + size_number + size_unit + ' / 2)';
-
-        return size_string;
+            return 'calc(' + size_number + size_unit + ' / 2)';
+        });
     }
 
     /**
@@ -385,17 +379,12 @@ export default class KadenceBlocksCSS {
             return false;
         }
 
-        // A token alias carries its own value/unit, so resolve to a bare var() and skip the unit.
-        if (isTokenAlias(value)) {
-            return resolveTokenAlias(value);
-        }
+        return filterDimensionValue(value, unit, () => {
+            var size_number = !this.empty(value) ? value : '0';
+            var size_unit = !this.empty(unit) ? unit : 'em';
 
-        var size_number = !this.empty(value) ? value : '0';
-        var size_unit = !this.empty(unit) ? unit : 'em';
-
-        var size_string = size_number + size_unit;
-
-        return size_string;
+            return size_number + size_unit;
+        });
     }
 
     render_color(value, opacity = null) {
@@ -494,45 +483,44 @@ export default class KadenceBlocksCSS {
 
         if (previewValue && Array.isArray(previewValue)) {
             const zeroCheck = !checkZero || previewValue[0] != '0' || previewValue[0] != 0;
-            // A token alias is not numeric, so it must be caught before the isNumeric gate and emitted
-            // as a bare var() (the token carries its own unit).
-            if (isTokenAlias(previewValue[0])) {
-                this.add_property(args['first_prop'], resolveTokenAlias(previewValue[0]));
-            } else if (this.isNumeric(previewValue[0]) && zeroCheck) {
-                this.add_property(args['first_prop'], previewValue[0] + unit);
-            } else if ('position' === property && !this.empty(previewValue[0])) {
-                this.add_property(args['first_prop'], previewValue[0]);
-            } else if (!this.empty(previewValue[0]) && this.is_variable_value(previewValue[0])) {
-                this.add_property(args['first_prop'], this.get_variable_value(previewValue[0]));
-            }
-            if (isTokenAlias(previewValue[1])) {
-                this.add_property(args['second_prop'], resolveTokenAlias(previewValue[1]));
-            } else if (this.isNumeric(previewValue[1]) && zeroCheck) {
-                this.add_property(args['second_prop'], previewValue[1] + unit);
-            } else if ('position' === property && !this.empty(previewValue[1])) {
-                this.add_property(args['second_prop'], previewValue[1]);
-            } else if (!this.empty(previewValue[1]) && this.is_variable_value(previewValue[1])) {
-                this.add_property(args['second_prop'], this.get_variable_value(previewValue[1]));
-            }
-            if (isTokenAlias(previewValue[2])) {
-                this.add_property(args['third_prop'], resolveTokenAlias(previewValue[2]));
-            } else if (this.isNumeric(previewValue[2]) && zeroCheck) {
-                this.add_property(args['third_prop'], previewValue[2] + unit);
-            } else if ('position' === property && !this.empty(previewValue[2])) {
-                this.add_property(args['third_prop'], previewValue[2]);
-            } else if (!this.empty(previewValue[2]) && this.is_variable_value(previewValue[2])) {
-                this.add_property(args['third_prop'], this.get_variable_value(previewValue[2]));
-            }
-            if (isTokenAlias(previewValue[3])) {
-                this.add_property(args['fourth_prop'], resolveTokenAlias(previewValue[3]));
-            } else if (this.isNumeric(previewValue[3]) && zeroCheck) {
-                this.add_property(args['fourth_prop'], previewValue[3] + unit);
-            } else if ('position' === property && !this.empty(previewValue[3])) {
-                this.add_property(args['fourth_prop'], previewValue[3]);
-            } else if (!this.empty(previewValue[3]) && this.is_variable_value(previewValue[3])) {
-                this.add_property(args['fourth_prop'], this.get_variable_value(previewValue[3]));
+            const sideProps = [args['first_prop'], args['second_prop'], args['third_prop'], args['fourth_prop']];
+            for (let i = 0; i < 4; i++) {
+                const sideValue = this.measure_side_value(previewValue[i], unit, property, zeroCheck);
+                if (sideValue) {
+                    this.add_property(sideProps[i], sideValue);
+                }
             }
         }
+    }
+
+    /**
+     * Resolves a single side of a measure array to its CSS value, through the dimension filter seam.
+     *
+     * The type-specific `kadence.helpers.dimensionValue` filter gets first crack at the raw value (so a
+     * design-token resolver can override before the unit is appended); otherwise the existing
+     * numeric / position / variable branches apply. Returns '' when the side contributes nothing.
+     *
+     * @since TBD
+     *
+     * @param  mixed  raw       the raw side value from the measure array.
+     * @param  string unit      the unit appended to a numeric side.
+     * @param  string property  the measure property (drives the position special-case).
+     * @param  bool   zeroCheck whether a zero value should be emitted.
+     * @return string
+     */
+    measure_side_value(raw, unit, property, zeroCheck) {
+        return filterDimensionValue(raw, unit, () => {
+            if (this.isNumeric(raw) && zeroCheck) {
+                return raw + unit;
+            }
+            if ('position' === property && !this.empty(raw)) {
+                return raw;
+            }
+            if (!this.empty(raw) && this.is_variable_value(raw)) {
+                return this.get_variable_value(raw);
+            }
+            return '';
+        });
     }
 
     /**
@@ -799,9 +787,6 @@ export default class KadenceBlocksCSS {
         if ('opacity' in value) {
             opacity = 'opacity' in value && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0;
         }
-        // The shadow color flows through render_color -> KadenceColorOutput, so an aliased color is
-        // resolved there. The numeric offset/blur/spread fields are not a design-token alias target
-        // (a whole-shadow token is not a supported shape), so they stay literal here.
         var shadowString = '';
         if (value['inset']) {
             shadowString =
