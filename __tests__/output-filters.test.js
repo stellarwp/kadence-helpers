@@ -11,6 +11,7 @@ import { addFilter, removeAllFilters } from '@wordpress/hooks';
 import KadenceColorOutput from '../src/kadence-color-output';
 import { getSpacingOptionOutput } from '../src/spacing-utilities';
 import KadenceBlocksCSS from '../src/css';
+import { filterColorValue, filterDimensionValue, formatBorderWidth } from '../src/apply-output-filters';
 
 const HOOKS = [ 'kadence.helpers.colorValue', 'kadence.helpers.dimensionValue', 'kadence.helpers.cssValue' ];
 
@@ -111,5 +112,33 @@ describe( 'general cssValue seam', () => {
 
 		expect( contexts[ 0 ] ).toEqual( { type: 'color', input: '#ffffff', opacity: null } );
 		expect( contexts[ 1 ] ).toMatchObject( { type: 'dimension', input: 24, unit: 'px' } );
+	} );
+} );
+
+describe( 'zero / empty handling — a legitimate value is never dropped', () => {
+	// The seam short-circuits on strict `early !== input`, NOT truthiness, so a 0 input (or a listener
+	// that returns 0) flows to the default rather than being treated as "no value".
+	it( 'filterColorValue / filterDimensionValue run computeDefault for a 0 input', () => {
+		expect( filterColorValue( 0, null, () => 'default' ) ).toBe( 'default' );
+		expect( filterDimensionValue( 0, 'px', () => '0px' ) ).toBe( '0px' );
+	} );
+
+	it( 'honors a listener that transforms 0 (strict-equality short-circuit)', () => {
+		addFilter( 'kadence.helpers.dimensionValue', 'test/dim', ( v ) => ( v === 0 ? 'var(--zero)' : v ) );
+		expect( filterDimensionValue( 0, 'px', () => '0px' ) ).toBe( 'var(--zero)' );
+	} );
+
+	it( 'formatBorderWidth emits a zero width as "0px"', () => {
+		expect( formatBorderWidth( 0, 'px' ) ).toBe( '0px' );
+	} );
+
+	it( 'render_size / render_half_size emit a zero value', () => {
+		expect( new KadenceBlocksCSS().render_size( 0, 'px' ) ).toBe( '0px' );
+		expect( new KadenceBlocksCSS().render_half_size( 0, 'px' ) ).toBe( 'calc(0px / 2)' );
+	} );
+
+	it( 'getSpacingOptionOutput emits a zero (number or string) as "0px"', () => {
+		expect( getSpacingOptionOutput( 0, 'px' ) ).toBe( '0px' );
+		expect( getSpacingOptionOutput( '0', 'px' ) ).toBe( '0px' );
 	} );
 } );
