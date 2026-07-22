@@ -2,23 +2,7 @@ import {
 	useMemo,
  } from '@wordpress/element';
  import KadenceColorOutput from '../kadence-color-output';
- import { filterDimensionValue } from '../apply-output-filters';
- /**
-  * Format a resolved border-width value through the dimension filter seam.
-  *
-  * The default output is the existing `value + unit`; a listener on `kadence.helpers.dimensionValue`
-  * (e.g. a design-token resolver) can override it before the unit is appended.
-  *
-  * @since TBD
-  *
-  * @param {*}      width The resolved side width value.
-  * @param {string} unit  The border unit appended to a literal width.
-  *
-  * @return {string} The CSS width string.
-  */
- function formatBorderWidth( width, unit ) {
-	return filterDimensionValue( width, unit, () => width + unit );
- }
+ import { formatBorderWidth } from '../apply-output-filters';
  function getInheritBorderWidth( device, side, inheritBorder ) {
 	const desktopStyle = ( undefined !== inheritBorder?.[0] ? inheritBorder?.[0] : [] );
 	const tabletStyle = ( undefined !== inheritBorder?.[1] ? inheritBorder?.[1] : [] );
