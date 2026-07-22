@@ -486,7 +486,9 @@ export default class KadenceBlocksCSS {
             const sideProps = [args['first_prop'], args['second_prop'], args['third_prop'], args['fourth_prop']];
             for (let i = 0; i < 4; i++) {
                 const sideValue = this.measure_side_value(previewValue[i], unit, property, zeroCheck);
-                if (sideValue) {
+                // '' is the "this side contributes nothing" sentinel; any real value (including a
+                // numeric zero, which the numeric branch returns as e.g. "0px") is emitted.
+                if (sideValue !== '') {
                     this.add_property(sideProps[i], sideValue);
                 }
             }

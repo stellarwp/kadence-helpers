@@ -41,6 +41,21 @@ describe( 'no filter registered (regression: byte-identical)', () => {
 			'padding-top:10px;padding-right:20px;padding-bottom:30px;padding-left:40px;'
 		);
 	} );
+
+	it( 'render_measure_output emits a zero side as "0px" rather than dropping it as falsy', () => {
+		const css = new KadenceBlocksCSS();
+		css.render_measure_output( [ 0, 0, 0, 0 ], null, null, 'Desktop', 'padding', 'px', {}, true );
+		expect( css._css ).toBe(
+			'padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;'
+		);
+	} );
+
+	it( 'render_measure_output skips only the empty side, keeping real values (incl. zero)', () => {
+		const css = new KadenceBlocksCSS();
+		css.render_measure_output( [ 0, 10, '', 20 ], null, null, 'Desktop', 'padding', 'px', {}, true );
+		// The third side ('') contributes nothing; the zero first side is still emitted.
+		expect( css._css ).toBe( 'padding-top:0px;padding-right:10px;padding-left:20px;' );
+	} );
 } );
 
 describe( 'type-specific colorValue seam', () => {
