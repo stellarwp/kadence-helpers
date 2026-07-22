@@ -25,7 +25,8 @@
 		"build:esm": "babel src --out-dir dist/esm --env-name esm --extensions \".js,.jsx\" --source-maps",
 		"build:cjs": "babel src --out-dir dist/cjs --env-name cjs --extensions \".js,.jsx\" --source-maps",
 		"build": "npm run clean && npm run build:esm && npm run build:cjs",
-		"prepare": "npm run build"
+		"prepare": "npm run build",
+		"test": "jest"
 	},
 	"dependencies": {
 		"@kadence/icons": "git+https://github.com/stellarwp/kadence-icons.git#1.1.0"
@@ -47,13 +48,21 @@
 	},
 	"homepage": "https://github.com/stellarwp/kadence-helpers#readme",
 	"peerDependencies": {
+		"@wordpress/hooks": ">=4 <5",
 		"react": ">=17 <19",
 		"react-dom": ">=17 <19"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.26.0",
 		"@babel/core": "^7.26.0",
+		"@babel/plugin-transform-modules-commonjs": "^7.26.0",
 		"@wordpress/babel-preset-default": "^8.0.0",
+		"@wordpress/element": "^8.3.0",
+		"@wordpress/hooks": "^4.51.0",
+		"@wordpress/i18n": "^6.24.0",
+		"babel-jest": "^30.4.1",
+		"jest": "^30.4.2",
+		"jest-environment-jsdom": "^30.4.1",
 		"prettier": "^2.8.8",
 		"rimraf": "^5.0.5"
 	},
