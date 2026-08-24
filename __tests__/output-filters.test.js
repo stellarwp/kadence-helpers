@@ -130,6 +130,25 @@ describe( 'type-specific dimensionValue seam', () => {
 		} );
 		expect( shadow ).toBe( '2px 4px 6px 0px rgba(0, 0, 0, 0.5)' );
 	} );
+
+	it( 'render_shadow prepends "inset" and still routes offset/blur/spread through the dimensionValue filter', () => {
+		addFilter( 'kadence.helpers.dimensionValue', 'test/dim', ( value ) =>
+			typeof value === 'string' && value.startsWith( '{' ) ? `var(--${ value.slice( 1, -1 ).replace( /\./g, '-' ) })` : value
+		);
+		const css = new KadenceBlocksCSS();
+		const shadow = css.render_shadow( {
+			hOffset: '{shadow.offset-x.md}',
+			vOffset: '{shadow.offset-y.md}',
+			blur: '{shadow.blur.md}',
+			spread: '{shadow.spread.md}',
+			color: '#000000',
+			opacity: 0.5,
+			inset: true,
+		} );
+		expect( shadow ).toBe(
+			'inset var(--shadow-offset-x-md) var(--shadow-offset-y-md) var(--shadow-blur-md) var(--shadow-spread-md) rgba(0, 0, 0, 0.5)'
+		);
+	} );
 } );
 
 describe( 'general cssValue seam', () => {
