@@ -97,6 +97,58 @@ describe( 'type-specific dimensionValue seam', () => {
 		expect( css._css ).toContain( 'border-top-left-radius:var(--y);' );
 		expect( css._css ).toContain( 'border-top-right-radius:8px;' );
 	} );
+
+	it( 'render_shadow routes hOffset/vOffset/blur/spread through the dimensionValue filter', () => {
+		addFilter( 'kadence.helpers.dimensionValue', 'test/dim', ( value ) =>
+			typeof value === 'string' && value.startsWith( '{' ) ? `var(--${ value.slice( 1, -1 ).replace( /\./g, '-' ) })` : value
+		);
+		const css = new KadenceBlocksCSS();
+		const shadow = css.render_shadow( {
+			hOffset: '{shadow.offset-x.md}',
+			vOffset: '{shadow.offset-y.md}',
+			blur: '{shadow.blur.md}',
+			spread: '{shadow.spread.md}',
+			color: '#000000',
+			opacity: 0.5,
+			inset: false,
+		} );
+		expect( shadow ).toBe(
+			'var(--shadow-offset-x-md) var(--shadow-offset-y-md) var(--shadow-blur-md) var(--shadow-spread-md) rgba(0, 0, 0, 0.5)'
+		);
+	} );
+
+	it( 'render_shadow keeps a plain numeric offset/blur/spread rendering as "<n>px" when no filter is registered', () => {
+		const css = new KadenceBlocksCSS();
+		const shadow = css.render_shadow( {
+			hOffset: 2,
+			vOffset: 4,
+			blur: 6,
+			spread: 0,
+			color: '#000000',
+			opacity: 0.5,
+			inset: false,
+		} );
+		expect( shadow ).toBe( '2px 4px 6px 0px rgba(0, 0, 0, 0.5)' );
+	} );
+
+	it( 'render_shadow prepends "inset" and still routes offset/blur/spread through the dimensionValue filter', () => {
+		addFilter( 'kadence.helpers.dimensionValue', 'test/dim', ( value ) =>
+			typeof value === 'string' && value.startsWith( '{' ) ? `var(--${ value.slice( 1, -1 ).replace( /\./g, '-' ) })` : value
+		);
+		const css = new KadenceBlocksCSS();
+		const shadow = css.render_shadow( {
+			hOffset: '{shadow.offset-x.md}',
+			vOffset: '{shadow.offset-y.md}',
+			blur: '{shadow.blur.md}',
+			spread: '{shadow.spread.md}',
+			color: '#000000',
+			opacity: 0.5,
+			inset: true,
+		} );
+		expect( shadow ).toBe(
+			'inset var(--shadow-offset-x-md) var(--shadow-offset-y-md) var(--shadow-blur-md) var(--shadow-spread-md) rgba(0, 0, 0, 0.5)'
+		);
+	} );
 } );
 
 describe( 'general cssValue seam', () => {

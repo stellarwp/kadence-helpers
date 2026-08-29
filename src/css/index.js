@@ -789,29 +789,45 @@ export default class KadenceBlocksCSS {
         if ('opacity' in value) {
             opacity = 'opacity' in value && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0;
         }
+        const hOffset = filterDimensionValue(
+            value['hOffset'],
+            'px',
+            () => (!this.empty(value['hOffset']) ? value['hOffset'] : '0') + 'px'
+        );
+        const vOffset = filterDimensionValue(
+            value['vOffset'],
+            'px',
+            () => (!this.empty(value['vOffset']) ? value['vOffset'] : '0') + 'px'
+        );
+        const blur = filterDimensionValue(value['blur'], 'px', () => (!this.empty(value['blur']) ? value['blur'] : '0') + 'px');
+        const spread = filterDimensionValue(
+            value['spread'],
+            'px',
+            () => (!this.empty(value['spread']) ? value['spread'] : '0') + 'px'
+        );
         var shadowString = '';
         if (value['inset']) {
             shadowString =
                 'inset ' +
-                (!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
-                'px ' +
-                (!this.empty(value['vOffset']) ? value['vOffset'] : '0') +
-                'px ' +
-                (!this.empty(value['blur']) ? value['blur'] : '0') +
-                'px ' +
-                (!this.empty(value['spread']) ? value['spread'] : '0') +
-                'px ' +
+                hOffset +
+                ' ' +
+                vOffset +
+                ' ' +
+                blur +
+                ' ' +
+                spread +
+                ' ' +
                 (!this.empty(value['color']) ? this.render_color(value['color'], opacity) : 'rgba(0,0,0,0.0)');
         } else {
             shadowString =
-                (!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
-                'px ' +
-                (!this.empty(value['vOffset']) ? value['vOffset'] : '0') +
-                'px ' +
-                (!this.empty(value['blur']) ? value['blur'] : '0') +
-                'px ' +
-                (!this.empty(value['spread']) ? value['spread'] : '0') +
-                'px ' +
+                hOffset +
+                ' ' +
+                vOffset +
+                ' ' +
+                blur +
+                ' ' +
+                spread +
+                ' ' +
                 (!this.empty(value['color']) ? this.render_color(value['color'], opacity) : 'rgba(0,0,0,0.0)');
         }
 
