@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { SPACING_SIZES_MAP } from '../constants';
+import { filterDimensionValue } from '../apply-output-filters';
 export function getSpacingOptionName( value, unit, spacingMap = SPACING_SIZES_MAP ) {
 	if ( ! value ) {
 		return __( 'None', '__KADENCE__TEXT__DOMAIN__' );
@@ -17,32 +18,34 @@ export function getSpacingOptionName( value, unit, spacingMap = SPACING_SIZES_MA
 	return found.name;
 }
 export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_MAP ) {
-	if ( undefined === value ) {
-		return '';
-	}
-	if ( value === '' ) {
-		return '';
-	}
-	if ( value === null ) {
-		return '';
-	}
-	if ( value === '') {
-		return '0' + unit;
-	}
-	if ( ! spacingMap ) {
-		return value;
-	}
-	if ( value === '0') {
-		return '0' + unit;
-	}
-	if ( value === 0 ) {
-		return '0' + unit;
-	}
-	const found = spacingMap.find( ( option ) => option.value === value );
-	if ( ! found ) {
-		return value + unit;
-	}
-	return found.output;
+	return filterDimensionValue( value, unit, () => {
+		if ( undefined === value ) {
+			return '';
+		}
+		if ( value === '' ) {
+			return '';
+		}
+		if ( value === null ) {
+			return '';
+		}
+		if ( value === '') {
+			return '0' + unit;
+		}
+		if ( ! spacingMap ) {
+			return value;
+		}
+		if ( value === '0') {
+			return '0' + unit;
+		}
+		if ( value === 0 ) {
+			return '0' + unit;
+		}
+		const found = spacingMap.find( ( option ) => option.value === value );
+		if ( ! found ) {
+			return value + unit;
+		}
+		return found.output;
+	} );
 }
 export function getSpacingOptionSize( value, spacingMap = SPACING_SIZES_MAP ) {
 	if ( ! value ) {

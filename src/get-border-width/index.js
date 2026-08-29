@@ -2,6 +2,7 @@ import {
 	useMemo,
  } from '@wordpress/element';
  import KadenceColorOutput from '../kadence-color-output';
+ import { formatBorderWidth } from '../apply-output-filters';
  function getInheritBorderWidth( device, side, inheritBorder ) {
 	const desktopStyle = ( undefined !== inheritBorder?.[0] ? inheritBorder?.[0] : [] );
 	const tabletStyle = ( undefined !== inheritBorder?.[1] ? inheritBorder?.[1] : [] );
@@ -11,21 +12,21 @@ import {
 function getBorderWidth( device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
 	if ( device === 'Mobile' ) {
 		if ( undefined !== mobileStyle?.[0]?.[side]?.[2] && '' !== mobileStyle?.[0]?.[side]?.[2] ) {
-			return mobileStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
+			return formatBorderWidth( mobileStyle?.[0]?.[side]?.[2], getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder ) );
 		} else if ( '' !== tabletStyle?.[0]?.[side]?.[2] ) {
-			return tabletStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
+			return formatBorderWidth( tabletStyle?.[0]?.[side]?.[2], getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder ) );
 		} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 			return getInheritBorderWidth( device, side, inheritBorder );
 		}
 	} else if ( device === 'Tablet' ) {
 		if ( undefined !== tabletStyle?.[0]?.[side]?.[2] && '' !== tabletStyle?.[0]?.[side]?.[2] ) {
-			return tabletStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
+			return formatBorderWidth( tabletStyle?.[0]?.[side]?.[2], getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder ) );
 		} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 			return getInheritBorderWidth( device, side, inheritBorder );
 		}
 	}
 	if ( undefined !== desktopStyle?.[0]?.[side]?.[2] && '' !== desktopStyle?.[0]?.[side]?.[2] ) {
-		return desktopStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
+		return formatBorderWidth( desktopStyle?.[0]?.[side]?.[2], getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder ) );
 	} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 		return getInheritBorderWidth( device, side, inheritBorder );
 	}
