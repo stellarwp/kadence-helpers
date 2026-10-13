@@ -5,13 +5,17 @@
  */
 /* global kadence_blocks_params */
 import hexToRGBA from '../hex-to-rgba';
+import { filterColorValue } from '../apply-output-filters';
 
 // eslint-disable-next-line camelcase
 export default function KadenceColorOutput( string, opacity = null ) {
-	if ( string && string.startsWith( 'palette' ) ) {
-		string = 'var(--global-' + string + ')';
-	} else if ( opacity !== null && ! isNaN( opacity ) && 1 !== Number( opacity ) && undefined !== string && '' !== string ) {
-		string = hexToRGBA( string, opacity );
-	}
-	return string;
+	return filterColorValue( string, opacity, () => {
+		let output = string;
+		if ( output && output.startsWith( 'palette' ) ) {
+			output = 'var(--global-' + output + ')';
+		} else if ( opacity !== null && ! isNaN( opacity ) && 1 !== Number( opacity ) && undefined !== output && '' !== output ) {
+			output = hexToRGBA( output, opacity );
+		}
+		return output;
+	} );
 }
