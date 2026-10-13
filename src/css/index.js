@@ -502,7 +502,7 @@ export default class KadenceBlocksCSS {
      * design-token resolver can override before the unit is appended); otherwise the existing
      * numeric / position / variable branches apply. Returns '' when the side contributes nothing.
      *
-     * @since TBD
+     * @since 1.1.1
      *
      * @param  mixed  raw       the raw side value from the measure array.
      * @param  string unit      the unit appended to a numeric side.

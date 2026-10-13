@@ -8,7 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
  * `output` so it does not overpromise coverage. Third-party listeners get a single seam over these
  * values; the `context` argument (`{ type, input, ... }`) lets them discriminate.
  *
- * @since TBD
+ * @since 1.1.1
  *
  * @var string
  */
@@ -22,7 +22,7 @@ const GENERAL_HOOK = 'kadence.helpers.cssValue';
  * produces the normal output. Either way the result passes through the general `cssValue` filter last.
  * With no filters registered this returns `computeDefault()` unchanged (strictly additive).
  *
- * @since TBD
+ * @since 1.1.1
  *
  * @param {string|undefined} string         The color the helper received — a hex string, a `paletteN`
  *                                          slug, a `{dot.alias}` reference, or empty/undefined.
@@ -46,7 +46,7 @@ export function filterColorValue( string, opacity, computeDefault ) {
  * produces the normal output. Either way the result passes through the general `cssValue` filter last.
  * With no filters registered this returns `computeDefault()` unchanged (strictly additive).
  *
- * @since TBD
+ * @since 1.1.1
  *
  * @param {string|number|undefined} value          The length/size the helper received — a number, a
  *                                                 numeric string, a size slug, a `{dot.alias}` reference,
@@ -69,7 +69,7 @@ export function filterDimensionValue( value, unit, computeDefault ) {
  * Shared by `get-border-width` and `get-border-style`. The default output is `width + unit`; a
  * `dimensionValue` listener can override it before the unit is appended.
  *
- * @since TBD
+ * @since 1.1.1
  *
  * @param {string|number|undefined} width The resolved side width value.
  * @param {string}                  unit  The border unit appended to a literal width.
