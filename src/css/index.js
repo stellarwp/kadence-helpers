@@ -391,9 +391,21 @@ export default class KadenceBlocksCSS {
         return KadenceColorOutput(value, opacity);
     }
 
+    /**
+     * Adds the typography declarations for the previewed device to the current selector.
+     *
+     * @since TBD
+     *
+     * @param {Array}  data          The typography attribute.
+     * @param {string} previewDevice The previewed device.
+     *
+     * @return {KadenceBlocksCSS} The builder.
+     */
     render_font(data, previewDevice) {
         // Do typographyStyle with no class attached
-        this._css += typographyStyle(data, '', previewDevice, false);
+        const rule = typographyStyle(data, '', previewDevice, false);
+        // Without a class the rule is '{declarations}', so drop the braces; the selector already provides them.
+        this._css += rule.slice(1, -1);
         return this;
     }
 
