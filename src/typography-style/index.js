@@ -2,6 +2,8 @@ import getPreviewSize from '../get-preview-size';
 import { getFontSizeOptionOutput } from '../font-size-utilities';
 /**
  * Return boolean about showing settings.
+ *
+ * @since 1.1.2 When no class is passed, returns the declarations without wrapping them in a rule.
  */
  export default ( data, cssClass, previewDevice ) => {
 	let outputCSS = '';
@@ -33,6 +35,9 @@ import { getFontSizeOptionOutput } from '../font-size-utilities';
 	}
 	if ( ! outputCSS ) {
 		return '';
+	}
+	if ( ! cssClass ) {
+		return outputCSS;
 	}
 	return cssClass + '{' + outputCSS + '}';
 }
