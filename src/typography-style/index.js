@@ -3,7 +3,7 @@ import { getFontSizeOptionOutput } from '../font-size-utilities';
 /**
  * Return boolean about showing settings.
  *
- * @since TBD When no class is passed, returns the declarations without wrapping them in a rule.
+ * @since 1.1.2 When no class is passed, returns the declarations without wrapping them in a rule.
  */
  export default ( data, cssClass, previewDevice ) => {
 	let outputCSS = '';

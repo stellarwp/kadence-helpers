@@ -3,7 +3,7 @@
  * bare declarations when no class is given. `render_font` relies on that to add the declarations to the
  * selector the builder already wraps.
  *
- * @since TBD
+ * @since 1.1.2
  */
 import KadenceBlocksCSS from '../src/css';
 import typographyStyle from '../src/typography-style';
@@ -17,7 +17,7 @@ jest.mock( 'react', () => ( {
 /**
  * Returns the CSS for one selector after the given callback has added its rules.
  *
- * @since TBD
+ * @since 1.1.2
  *
  * @param {Function} callback Receives the CSS builder after its selector is set.
  *
