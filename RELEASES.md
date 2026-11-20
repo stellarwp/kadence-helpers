@@ -16,8 +16,10 @@ Commit these changes to the release branch itself, not to a new branch.
 
 ## Release
 1. Merge the release PR into `main` with a merge commit, not a squash (1.1.1 and 1.1.2 were merged that way).
-2. Tag the merge commit and publish the GitHub Release in one step. Please check first that `main` still points at the merge commit:
-   `gh release create X.Y.Z --target main --title X.Y.Z --generate-notes`
+2. Create the tag while creating the GitHub Release. Open [Releases -> Draft a new release](https://github.com/stellarwp/kadence-helpers/releases/new), then:
+   * In "Choose a tag", type the new version (`X.Y.Z`, no `v`) and pick **Create new tag: X.Y.Z on publish**. GitHub only creates the tag when you publish.
+   * Leave the target as `main`. Please check that `main` still points at the merge commit.
+   * Set the title to the version, click **Generate release notes**, keep **Set as the latest release** checked, and click **Publish release**.
 3. Check that the tag points at the merge commit and that the release shows as Latest.
 4. In each plugin that needs the release, set `@kadence/helpers` to `github:stellarwp/kadence-helpers#X.Y.Z` in `package.json` and commit it with the regenerated lockfile:
    * Kadence Blocks: `bun install`, then commit `package.json` and `bun.lock`.
